@@ -5,8 +5,9 @@ const addToChatField = (chatEvent) => {
   const message = $('<li class = "list-group-item"></li>');
   const timestamp = new Date(Date.now()).toLocaleString();
   const idString = chatEvent.userId ? chatEvent.userId+ ': ' : '';
+  const errorString = chatEvent.isError? 'style="color:red"': '';
   message.append('<strong>' + idString + timestamp + '</strong>');
-  message.append('<p>' + chatEvent.text + '</p>');
+  message.append('<p '+ errorString + '>' + chatEvent.text + '</p>');
   $('#messages').append(message);
   const list = $("ul.messages.list-group");
   const offset = list.offset();
@@ -67,11 +68,11 @@ function matchCommand(text){
         socket.emit('nickname', {id: socket.id, name: words[1]});
       }
       else{
-        addToChatField({text: 'unable to change nickname must provide value'});
+        addToChatField({text: 'unable to change nickname must provide value EX: "/nickname dude"', isError: true} );
       }
       break;
     default:
-      addToChatField({text: `command not found`});
+      addToChatField({text: `command not found`, isError: true});
       break;
   }
   $('#messagebox').val('');
