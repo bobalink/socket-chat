@@ -10,6 +10,7 @@ function create(http) {
     console.log('user connected', socket.id);
     io.emit('user joined', nameIfExists(socket.id));
     socket.on('disconnect', () => {
+      console.log('user disconnected', socket.id);
       io.emit('user disconnected', nameIfExists(socket.id));
       if(nickNames[socket.id]){
         delete nickNames[socket.id];
@@ -18,12 +19,10 @@ function create(http) {
     socket.on('chat message', (msg) => {
       console.log('received message', msg);
       msg.userId = nameIfExists(msg.userId);
-      console.log('after transofrm', msg);
       io.emit('chat message', msg);
     });
     socket.on('nickname', (nickName) => {
-      console.log(`user ${nickName.id} changed name to ${nickName.name}`);
-      nickName.id = nameIfExists(nickName.id);
+      console.log(`user ${nameIfExists(nickName.id)} changed name to ${nickName.name}`);
       nickNames[socket.id] = nickName.name;
       io.emit('nickname', nickName);
     })

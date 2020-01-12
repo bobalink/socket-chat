@@ -11,10 +11,7 @@ const addToChatField = (chatEvent) => {
   $('#messages').append(message);
   const list = $("ul.messages.list-group");
   const offset = list.offset();
-  console.log('offset is', offset);
   const scrollLength = list[0].scrollHeight;
-  console.log('scrollLength is', scrollLength);
-  console.log('scrollLength - offset.top is', scrollLength - offset.top);
   $("ul.messages.list-group").animate({
     scrollTop: scrollLength - offset.top
   });
@@ -42,6 +39,7 @@ socket.on('chat message', (chatEvent) =>{
 
 socket.on('user joined', (id)=> {
   if(id === socket.id) {
+    $('#user-name').html(id + ":");
     addToChatField({ text :`Joined chat as user ${id}`});
   }
   else{
@@ -58,13 +56,12 @@ socket.on('nickname', (event) => {
 });
 
 function matchCommand(text){
-  console.log('text is', text);
   const words = text.trim().split(" ");
-  console.log('words is', words);
   switch (words[0]) {
     case('/nickname'):
       if(words[1]){
-        console.log('emitting name change');
+        console.log(`emitting name change to ${words[1]}`);
+        $('#user-name').html(words[1] + ":");
         socket.emit('nickname', {id: socket.id, name: words[1]});
       }
       else{
